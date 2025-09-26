@@ -1,1 +1,1 @@
-# EthNewDelhi Client
+# client
