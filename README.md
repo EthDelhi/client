@@ -1,4 +1,4 @@
-# **Verify.dev: Automated Integrity and Technical Validation Platform**
+# **Forensicode: Automated Integrity and Technical Validation Platform**
 
 ## **The Problem Statement: Addressing the Crisis of Trust and Verification in Hackathons**
 
@@ -20,15 +20,15 @@ Sponsor challenges and specialized tracks often require the use of specific APIs
 * **Code Blindness:** Judges cannot definitively confirm if an imported function is actually called, if the logic is correct, or if the repository contains large amounts of unused or dead code that dilutes the actual hackathon work.  
 * **The AI Summary Disconnect:** A discrepancy often exists between the participant's enthusiastically written project summary and the technical reality of the codebase.
 
-**Verify.dev** solves these critical problems by employing a multi-agent AI framework to conduct a deep, objective, and real-time audit of every submission, ensuring a level playing field for all participants.
+**Forensicode** solves these critical problems by employing a multi-agent AI framework to conduct a deep, objective, and real-time audit of every submission, ensuring a level playing field for all participants.
 
-## **The Solution: Verify.dev — AI-Powered Audit and Validation**
+## **The Solution: Forensicode — AI-Powered Audit and Validation**
 
-Verify.dev is a revolutionary, three-agent system designed to bring unprecedented transparency and objectivity to hackathon judging. It performs dual audits: **Integrity** (checking timeline adherence) and **Technical Implementation** (checking code quality and requirement fulfillment).
+Forensicode is a revolutionary, three-agent system designed to bring unprecedented transparency and objectivity to hackathon judging. It performs dual audits: **Integrity** (checking timeline adherence) and **Technical Implementation** (checking code quality and requirement fulfillment).
 
 ### **Input Requirements**
 
-Verify.dev processes the following inputs for each submission:
+Forensicode processes the following inputs for each submission:
 
 1. **Project Repository Link (GitHub/GitLab)**  
 2. **Official Hackathon Timeline (Start/End Timestamps)**  
@@ -77,7 +77,7 @@ The final stage synthesizes all metrics into a unified dashboard and generates a
 
 ## **Justification and Online Resources**
 
-Verify.dev's methodologies are grounded in established industry practices for code analysis and academic research on fraudulent commit behavior.
+Forensicode's methodologies are grounded in established industry practices for code analysis and academic research on fraudulent commit behavior.
 
 | Metric/Methodology | Purpose | Resource |
 | :---- | :---- | :---- |
