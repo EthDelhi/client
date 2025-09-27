@@ -396,11 +396,6 @@ export default function ChatPage() {
             disabled={
               !formData.repoUrls || !formData.projectSummary || isAnalyzing
             }
-            className={`cta-button h-14 px-8 text-lg font-medium transition-all duration-300 ${
-              !formData.repoUrls || !formData.projectSummary || isAnalyzing
-                ? 'opacity-50 cursor-not-allowed'
-                : 'hover:scale-105 hover:shadow-2xl hover:shadow-primary/20'
-            }`}
           >
             {isAnalyzing ? (
               <>

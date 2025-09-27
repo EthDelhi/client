@@ -241,7 +241,7 @@ export default function ReportPage() {
       {/* Navigation */}
       <nav className="relative z-10 flex items-center justify-between p-6 max-w-7xl mx-auto backdrop-blur-sm">
         <Link
-          href="/analyze"
+          href="/chatPage"
           className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105"
         >
           <ArrowLeft className="w-5 h-5" />
