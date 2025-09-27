@@ -68,9 +68,10 @@ export default function ReportPage() {
         typeof parsed.sponsor.response_from_agent === "string"
       ) {
         try {
-          parsed.sponsor.response_from_agent = JSON.parse(
-            JSON.parse(parsed.sponsor.response_from_agent)
-          );
+          console.log("before",parsed.sponsor.response_from_agent)
+          console.log("after",JSON.parse(JSON.parse(parsed.sponsor.response_from_agent)))
+          console.log("final",JSON.parse(parsed.sponsor.response_from_agent))
+          parsed.sponsor.response_from_agent = JSON.parse(parsed.sponsor.response_from_agent);
         } catch (err) {
           console.warn("Could not parse response_from_agent:", err);
         }
@@ -80,6 +81,7 @@ export default function ReportPage() {
       setIsLoading(false);    }
   }, [])
 
+  
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
       setMousePosition({
@@ -92,6 +94,7 @@ export default function ReportPage() {
     return () => window.removeEventListener("mousemove", handleMouseMove)
   }, [])
 
+  console.log(reportData)
   // Chart configurations using actual data
   const analysisData = reportData?.analysis
   const sponsorData = reportData?.sponsor
@@ -317,7 +320,7 @@ export default function ReportPage() {
                   <GitBranch className="w-4 h-4" />
                   <span>Total Commits</span>
                 </div>
-                <p className="text-2xl font-bold text-purple-400">{analysisData?.metadata?.commits_all}</p>
+                <p className="text-2xl font-bold text-purple-400">{analysisData?.graph_data?.metadata?.commits_all}</p>
               </div>
               <div className="space-y-2">
                 <div className="flex items-center space-x-2 text-sm text-muted-foreground">
@@ -338,8 +341,8 @@ export default function ReportPage() {
                   <Shield className="w-4 h-4" />
                   <span>Risk Level</span>
                 </div>
-                <p className={`text-2xl font-bold ${mockData.authenticity_summary.risk_level === 'Medium' ? 'text-yellow-400' : 'text-green-400'}`}>
-                  {mockData.authenticity_summary.risk_level}
+                <p className={`text-2xl font-bold ${analysisData?.authenticity_summary?.risk_level === 'Medium' ? 'text-yellow-400' : 'text-green-400'}`}>
+                  {analysisData?.authenticity_summary?.risk_level}
                 </p>
               </div>
             </div>
@@ -355,7 +358,7 @@ export default function ReportPage() {
                   <Activity className="w-6 h-6 text-purple-400" />
                 </div>
               </div>
-              <h3 className="text-3xl font-bold text-purple-400 mb-2">{analysisData?.metadata?.commits_before}</h3>
+              <h3 className="text-3xl font-bold text-purple-400 mb-2">{analysisData?.graph_data?.metadata?.commits_before>0 ? analysisData?.graph_data?.metadata?.commits_before : 0}</h3>
               <p className="text-sm text-muted-foreground">Commits Before Hackathon</p>
             </CardContent>
           </Card>
@@ -367,7 +370,7 @@ export default function ReportPage() {
                   <Code className="w-6 h-6 text-blue-400" />
                 </div>
               </div>
-              <h3 className="text-3xl font-bold text-blue-400 mb-2">{analysisData?.graph_data?.lines_change_map?.length}</h3>
+              <h3 className="text-3xl font-bold text-blue-400 mb-2">{analysisData?.graph_data?.lines_change_map?.length >0 ? analysisData?.graph_data?.lines_change_map?.length : 0}</h3>
               <p className="text-sm text-muted-foreground">Analyzed Commits</p>
             </CardContent>
           </Card>
@@ -446,7 +449,7 @@ export default function ReportPage() {
               <div className="h-64">
                 <ApexChart
                   options={summaryInflationChart}
-                  series={[Math.round(analysisData?.authenticity_summary?.trust_score * 100)]}
+                  series={[100 - Math.round(analysisData?.authenticity_summary?.trust_score * 100)]}
                   type="radialBar"
                   height="100%"
                 />
@@ -473,9 +476,9 @@ export default function ReportPage() {
                     { 
                       name: 'Commits', 
                       data: [
-                        analysisData?.metadata?.commits_before,
+                        analysisData?.graph_data?.metadata?.commits_before,
                         analysisData?.graph_data?.line_changes_map?.length,
-                        analysisData?.metadata?.commits_after
+                        analysisData?.graph_data?.metadata?.commits_after
                       ]
                     }
                   ]}
@@ -609,7 +612,7 @@ export default function ReportPage() {
                     <Clock className="w-4 h-4" />
                     <span>Pre-Hackathon Commits</span>
                   </div>
-                  <p className="text-3xl font-bold text-red-400">{analysisData?.metadata?.commits_before}</p>
+                  <p className="text-3xl font-bold text-red-400">{analysisData?.graph_data?.metadata?.commits_before}</p>
                 </div>
                 <div className="space-y-3">
                   <div className="flex items-center space-x-2 text-sm text-muted-foreground">
@@ -654,8 +657,8 @@ export default function ReportPage() {
               <p className="text-muted-foreground leading-relaxed">
                 <strong className="text-red-400">⚠️ Integrity Concerns Detected:</strong> {analysisData?.authenticity_summary?.verdict_summary}
                 The analysis reveals that <strong className="text-purple-400">{sponsorData?.response_from_agent?.project_url?.split('/')[4]}</strong> had significant development activity 
-                prior to the hackathon period, with <strong className="text-blue-400">{analysisData?.metadata?.commits_before} commits</strong> 
-                completed before the official start date. This pattern suggests potential pre-work that may violate hackathon integrity requirements.
+                prior to the hackathon period, with <strong className="text-blue-400">{analysisData?.graph_data?.metadata?.commits_before} commits</strong> 
+                 completed before the official start date. This pattern suggests potential pre-work that may violate hackathon integrity requirements.
               </p>
             </div>
           </CardContent>
