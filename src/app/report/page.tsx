@@ -12,6 +12,7 @@ import type * as THREE from "three"
 import dynamic from "next/dynamic"
 import { ApexOptions } from "apexcharts"
 import { mockData } from "@/src/lib/mock"
+import { Loader } from "@/src/components/Loader"
 
 // Dynamically import ApexCharts with SSR disabled for Next.js compatibility
 const ApexChart = dynamic(() => import("react-apexcharts"), { ssr: false })
@@ -48,9 +49,10 @@ function InteractiveAnalysisBackground({ mousePosition }: { mousePosition: { x: 
 }
 
 export default function ReportPage() {
+  const [loading,setIsLoading]=useState(true);
   const [reportData, setReportData] = useState<{
-    analysis: typeof mockData;
-    additional: typeof mockData;
+    analysis:any;
+    sponsor:any;
   } | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
@@ -58,10 +60,25 @@ export default function ReportPage() {
     // Get the data from localStorage
     const storedData = localStorage.getItem('reportData');
     if (storedData) {
-      setReportData(JSON.parse(storedData));
-    }
+      let parsed = JSON.parse(storedData);
+
+      // Check if response_from_agent exists and is still a stringified JSON
+      if (
+        parsed.sponsor &&
+        typeof parsed.sponsor.response_from_agent === "string"
+      ) {
+        try {
+          parsed.sponsor.response_from_agent = JSON.parse(
+            JSON.parse(parsed.sponsor.response_from_agent)
+          );
+        } catch (err) {
+          console.warn("Could not parse response_from_agent:", err);
+        }
+      }
+  
+      setReportData(parsed);
+      setIsLoading(false);    }
   }, [])
-  const router = useRouter()
 
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
@@ -75,9 +92,9 @@ export default function ReportPage() {
     return () => window.removeEventListener("mousemove", handleMouseMove)
   }, [])
 
-
   // Chart configurations using actual data
-  const data = reportData?.analysis || mockData;
+  const analysisData = reportData?.analysis
+  const sponsorData = reportData?.sponsor
   const summaryInflationChart: ApexOptions = {
     chart: { type: 'radialBar', background: 'transparent' },
     plotOptions: {
@@ -113,12 +130,12 @@ export default function ReportPage() {
       }
     },
     xaxis: {
-      categories: mockData.graph_data.line_changes_map.map(item =>
+      categories: analysisData?.graph_data?.line_changes_map?.map((item:any) =>
         new Date(item.date).toLocaleDateString('en-US', { month: 'short', year: '2-digit' })
       ),
       labels: {
         style: {
-          colors: mockData.graph_data.line_changes_map.map(() => '#FFFFFF') // dynamic based on number of categories
+          colors: analysisData?.graph_data?.line_changes_map?.map(() => '#FFFFFF') // dynamic based on number of categories
         }
       }
     },
@@ -144,7 +161,7 @@ export default function ReportPage() {
 
   const contributorChart: ApexOptions = {
     chart: { type: 'pie', background: 'transparent' },
-    labels: mockData.graph_data.contributor_map.map(c => c.user),
+    labels: analysisData?.graph_data?.contributor_map?.map((c:any) => c.user),
     colors: ['#6B5FFF', '#4D8AFF', '#FF64F9', '#22C55E', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4', '#10B981', '#F97316'],
     stroke: { show: false },
     dataLabels: {
@@ -221,6 +238,10 @@ export default function ReportPage() {
     tooltip: { enabled: false }
   }
 
+  if(loading){
+    return <Loader/>
+  }
+
   return (
     <div className="min-h-screen relative overflow-hidden">
       <div className="fixed inset-0 z-0">
@@ -241,7 +262,7 @@ export default function ReportPage() {
       {/* Navigation */}
       <nav className="relative z-10 flex items-center justify-between p-6 max-w-7xl mx-auto backdrop-blur-sm">
         <Link
-          href="/chatPage"
+          href="/analyze"
           className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105"
         >
           <ArrowLeft className="w-5 h-5" />
@@ -273,7 +294,7 @@ export default function ReportPage() {
                 </div>
                 <div>
                   <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                    {mockData.repository.name}
+                    {sponsorData?.response_from_agent?.project_url?.split('/')[4]}
                   </span>
                   <p className="text-sm text-muted-foreground font-normal mt-1">
                     Last analyzed: {new Date().toLocaleString()}
@@ -281,7 +302,7 @@ export default function ReportPage() {
                 </div>
               </div>
               <Link 
-                href={mockData.repository.url}
+                href={sponsorData?.response_from_agent?.project_url || ""}
                 className="flex items-center space-x-2 text-purple-400 hover:text-purple-300 transition-colors"
               >
                 <ExternalLink className="w-5 h-5" />
@@ -296,14 +317,14 @@ export default function ReportPage() {
                   <GitBranch className="w-4 h-4" />
                   <span>Total Commits</span>
                 </div>
-                <p className="text-2xl font-bold text-purple-400">{mockData.metadata.total_commits}</p>
+                <p className="text-2xl font-bold text-purple-400">{analysisData?.metadata?.commits_all}</p>
               </div>
               <div className="space-y-2">
                 <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                   <Users className="w-4 h-4" />
                   <span>Contributors</span>
                 </div>
-                <p className="text-2xl font-bold text-blue-400">{mockData.metadata.total_contributors}</p>
+                <p className="text-2xl font-bold text-blue-400">{analysisData?.graph_data?.contributor_map?.length}</p>
               </div>
               <div className="space-y-2">
                 <div className="flex items-center space-x-2 text-sm text-muted-foreground">
@@ -334,7 +355,7 @@ export default function ReportPage() {
                   <Activity className="w-6 h-6 text-purple-400" />
                 </div>
               </div>
-              <h3 className="text-3xl font-bold text-purple-400 mb-2">{mockData.metadata.commit_timing.before_hackathon}</h3>
+              <h3 className="text-3xl font-bold text-purple-400 mb-2">{analysisData?.metadata?.commits_before}</h3>
               <p className="text-sm text-muted-foreground">Commits Before Hackathon</p>
             </CardContent>
           </Card>
@@ -346,7 +367,7 @@ export default function ReportPage() {
                   <Code className="w-6 h-6 text-blue-400" />
                 </div>
               </div>
-              <h3 className="text-3xl font-bold text-blue-400 mb-2">{mockData.metadata.analyzed_commits}</h3>
+              <h3 className="text-3xl font-bold text-blue-400 mb-2">{analysisData?.graph_data?.lines_change_map?.length}</h3>
               <p className="text-sm text-muted-foreground">Analyzed Commits</p>
             </CardContent>
           </Card>
@@ -358,7 +379,7 @@ export default function ReportPage() {
                   <Target className="w-6 h-6 text-cyan-400" />
                 </div>
               </div>
-              <h3 className="text-3xl font-bold text-cyan-400 mb-2">{Math.round(mockData.authenticity_summary.trust_score * 100)}%</h3>
+              <h3 className="text-3xl font-bold text-cyan-400 mb-2">{Math.round(analysisData?.authenticity_summary?.trust_score * 100)}%</h3>
               <p className="text-sm text-muted-foreground">Trust Score</p>
             </CardContent>
           </Card>
@@ -370,7 +391,7 @@ export default function ReportPage() {
                   <Zap className="w-6 h-6 text-green-400" />
                 </div>
               </div>
-              <h3 className="text-3xl font-bold text-green-400 mb-2">{mockData.metadata.commit_timing.during_hackathon}</h3>
+              <h3 className="text-3xl font-bold text-green-400 mb-2">{analysisData?.graph_data?.lines_change_map?.length}</h3>
               <p className="text-sm text-muted-foreground">Commits During Hackathon</p>
             </CardContent>
           </Card>
@@ -396,11 +417,11 @@ export default function ReportPage() {
                   series={[
                     { 
                       name: 'Additions', 
-                      data: mockData.graph_data.line_changes_map.map(item => item.additions) 
+                      data: analysisData?.graph_data?.line_changes_map?.map((item:any) => item.additions) 
                     },
                     { 
                       name: 'Deletions', 
-                      data: mockData.graph_data.line_changes_map.map(item => item.deletions) 
+                      data: analysisData?.graph_data?.line_changes_map?.map((item:any) => item.deletions) 
                     }
                   ]}
                   type="area"
@@ -425,7 +446,7 @@ export default function ReportPage() {
               <div className="h-64">
                 <ApexChart
                   options={summaryInflationChart}
-                  series={[Math.round(mockData.authenticity_summary.trust_score * 100)]}
+                  series={[Math.round(analysisData?.authenticity_summary?.trust_score * 100)]}
                   type="radialBar"
                   height="100%"
                 />
@@ -452,9 +473,9 @@ export default function ReportPage() {
                     { 
                       name: 'Commits', 
                       data: [
-                        mockData.metadata.commit_timing.before_hackathon,
-                        mockData.metadata.commit_timing.during_hackathon,
-                        mockData.metadata.commit_timing.after_hackathon
+                        analysisData?.metadata?.commits_before,
+                        analysisData?.graph_data?.line_changes_map?.length,
+                        analysisData?.metadata?.commits_after
                       ]
                     }
                   ]}
@@ -561,10 +582,11 @@ export default function ReportPage() {
               <div className="h-64">
                 <ApexChart
                   options={contributorChart}
-                  series={mockData.graph_data.contributor_map.map(c => c.percentage)}
+                  series={analysisData?.graph_data?.contributor_map?.map((c:any) => c.percentage)}
                   type="pie"
                   height="100%"
                 />
+                
               </div>
             </CardContent>
           </Card>
@@ -587,28 +609,28 @@ export default function ReportPage() {
                     <Clock className="w-4 h-4" />
                     <span>Pre-Hackathon Commits</span>
                   </div>
-                  <p className="text-3xl font-bold text-red-400">{mockData.metadata.commit_timing.before_hackathon}</p>
+                  <p className="text-3xl font-bold text-red-400">{analysisData?.metadata?.commits_before}</p>
                 </div>
                 <div className="space-y-3">
                   <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                     <Activity className="w-4 h-4" />
                     <span>During Hackathon</span>
                   </div>
-                  <p className="text-3xl font-bold text-red-400">{mockData.metadata.commit_timing.during_hackathon}</p>
+                  <p className="text-3xl font-bold text-red-400">{analysisData?.graph_data?.line_changes_map?.length}</p>
                 </div>
                 <div className="space-y-3">
                   <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                     <Users className="w-4 h-4" />
                     <span>Risk Level</span>
                   </div>
-                  <p className="text-3xl font-bold text-yellow-400">{mockData.authenticity_summary.risk_level}</p>
+                  <p className="text-3xl font-bold text-yellow-400">{analysisData?.authenticity_summary?.risk_level}</p>
                 </div>
                 <div className="space-y-3">
                   <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                     <Shield className="w-4 h-4" />
                     <span>Trust Score</span>
                   </div>
-                  <p className="text-3xl font-bold text-red-400">{Math.round(mockData.authenticity_summary.trust_score * 100)}%</p>
+                  <p className="text-3xl font-bold text-red-400">{Math.round(analysisData?.authenticity_summary?.trust_score * 100)}%</p>
                 </div>
               </div>
             </CardContent>
@@ -630,9 +652,9 @@ export default function ReportPage() {
           <CardContent className="space-y-4">
             <div className="p-6 rounded-lg bg-background/20 backdrop-blur-sm border border-purple-500/20">
               <p className="text-muted-foreground leading-relaxed">
-                <strong className="text-red-400">⚠️ Integrity Concerns Detected:</strong> {mockData.authenticity_summary.verdict_summary}
-                The analysis reveals that <strong className="text-purple-400">{mockData.repository.name}</strong> had significant development activity 
-                prior to the hackathon period, with <strong className="text-blue-400">{mockData.metadata.commit_timing.before_hackathon} commits</strong> 
+                <strong className="text-red-400">⚠️ Integrity Concerns Detected:</strong> {analysisData?.authenticity_summary?.verdict_summary}
+                The analysis reveals that <strong className="text-purple-400">{sponsorData?.response_from_agent?.project_url?.split('/')[4]}</strong> had significant development activity 
+                prior to the hackathon period, with <strong className="text-blue-400">{analysisData?.metadata?.commits_before} commits</strong> 
                 completed before the official start date. This pattern suggests potential pre-work that may violate hackathon integrity requirements.
               </p>
             </div>
