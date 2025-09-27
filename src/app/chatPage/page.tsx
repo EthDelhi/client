@@ -97,7 +97,7 @@ export default function ChatPage() {
     setTimeout(() => {
       setIsAnalyzing(false);
       document.body.classList.add("slide-up");
-      router.push("/reportsPage");
+      router.push("/report");
     }, 3000);
   };
 
