@@ -1,14 +1,12 @@
-/* @tailwind base;
-@tailwind components;
-@tailwind utilities;
-
+@import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
+  /* Updated color scheme with rainbow button colors */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -86,6 +84,7 @@
 }
 
 @theme inline {
+  /* optional: --font-sans, --font-serif, --font-mono if they are applied in the layout.tsx */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -133,6 +132,7 @@
   }
 }
 
+/* Sophisticated rainbow gradient CTA button */
 .cta-button {
   border: calc(0.08 * var(--m)) solid transparent;
   position: relative;
@@ -205,6 +205,7 @@
   }
 }
 
+/* Enhanced background animation */
 @keyframes backgroundShift {
   0%,
   100% {
@@ -227,6 +228,7 @@
   }
 }
 
+/* Three.js canvas styling */
 .three-canvas {
   position: fixed;
   top: 0;
@@ -237,6 +239,7 @@
   pointer-events: none;
 }
 
+/* Slide up animation for page transitions */
 @keyframes slideUp {
   from {
     transform: translateY(100vh);
@@ -252,6 +255,7 @@
   animation: slideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
+/* Enhanced particle animations */
 @keyframes float {
   0%,
   100% {
@@ -266,170 +270,38 @@
   animation: float 6s ease-in-out infinite;
 }
 
-@media screen and (max-width: 1000px) {
-  :root {
-    --m: 0.8rem;
-  }
-} */
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@import "tw-animate-css";
-
-/* ================= Dark theme via CSS variables ================= */
-:root {
-  /* Light mode colors (fallback, if you want toggling later) */
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --radius: 0.625rem;
-  --m: 1rem;
+/* Added floating card animation and enhanced shadows */
+.floating-card {
+  transform: translateY(0);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: floatGentle 6s ease-in-out infinite;
 }
 
-/* Force dark mode variables by default */
-.dark,
-html {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
+.floating-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 25px 50px -12px rgba(107, 95, 255, 0.25), 0 0 0 1px rgba(107, 95, 255, 0.1), 0 0 50px
+    rgba(107, 95, 255, 0.1);
 }
 
-/* ================= Tailwind base layer ================= */
-@layer base {
-  * {
-    @apply outline-none;
-  }
-
-  body {
-    @apply bg-[var(--background)] text-[var(--foreground)] font-sans;
-  }
-
-  .card {
-    @apply bg-[var(--card)] text-[var(--card-foreground)] rounded-lg p-4;
-  }
-
-  .popover {
-    @apply bg-[var(--popover)] text-[var(--popover-foreground)] rounded-md p-2;
-  }
-
-  button {
-    @apply border border-[var(--border)] rounded-md px-4 py-2;
-    color: var(--foreground);
-    background: var(--card);
-  }
-}
-
-/* ================= CTA Button (rainbow) ================= */
-.cta-button {
-  border: calc(0.08 * var(--m)) solid transparent;
-  position: relative;
-  color: #f3f3f3;
-  font-family: "Styrene B", system-ui, sans-serif;
-  font-size: var(--m);
-  font-weight: 500;
-  border-radius: calc(0.7 * var(--m));
-  padding: calc(0.5 * var(--m)) calc(1 * var(--m));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.3s ease;
-
-  background: linear-gradient(#121213, #121213),
-    linear-gradient(#121213 50%, rgba(18, 18, 19, 0.6) 80%, rgba(18, 18, 19, 0)),
-    linear-gradient(
-      90deg,
-      var(--orange),
-      var(--yellow),
-      var(--green),
-      var(--blue),
-      var(--purple),
-      var(--pink),
-      var(--red)
-    );
-  background-origin: border-box;
-  background-clip: padding-box, border-box, border-box;
-  background-size: 200%;
-  animation: animate 2s infinite linear;
-}
-
-.cta-button::before {
-  content: "";
-  background: linear-gradient(
-    90deg,
-    var(--orange),
-    var(--yellow),
-    var(--green),
-    var(--blue),
-    var(--purple),
-    var(--pink),
-    var(--red)
-  );
-  height: 30%;
-  width: 60%;
-  position: absolute;
-  bottom: -20%;
-  z-index: -5;
-  background-size: 200%;
-  animation: animate 2s infinite linear;
-  filter: blur(calc(0.8 * var(--m)));
-  border-radius: calc(0.7 * var(--m));
-}
-
-.cta-button:hover,
-.cta-button:hover::before {
-  animation: animate 0.5s infinite linear;
-  transform: translateY(-2px);
-}
-
-@keyframes animate {
-  0% {
-    background-position: 0;
-  }
+@keyframes floatGentle {
+  0%,
   100% {
-    background-position: 200%;
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
   }
 }
 
-/* ================= Responsive sizing ================= */
+/* Enhanced input focus effects */
+.floating-card input:focus,
+.floating-card textarea:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 25px -5px rgba(107, 95, 255, 0.1), 0 0 0 1px rgba(107, 95, 255, 0.2);
+}
+
 @media screen and (max-width: 1000px) {
   :root {
     --m: 0.8rem;
   }
 }
-

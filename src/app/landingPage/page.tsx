@@ -3,9 +3,10 @@
 import { useState, useRef, useEffect } from "react"
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import { OrbitControls, Sphere, MeshDistortMaterial, Environment, Float } from "@react-three/drei"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent } from "@/src/components/ui/card"
 import { FileText, BarChart3, Zap, Brain, Network } from "lucide-react"
 import type * as THREE from "three"
+
 
 function InteractiveBackground({ mousePosition }: { mousePosition: { x: number; y: number } }) {
   const meshRef = useRef<THREE.Mesh>(null)
@@ -31,7 +32,7 @@ function InteractiveBackground({ mousePosition }: { mousePosition: { x: number; 
           roughness={0.2}
           metalness={0.8}
           transparent
-          opacity={0.8} 
+          opacity={0.8}
         />
       </Sphere>
     </Float>
@@ -44,9 +45,9 @@ function InteractiveParticles() {
       {Array.from({ length: 120 }).map((_, i) => (
         <Float
           key={i}
-          speed={0.2 + Math.random() * 0.3}      
-          rotationIntensity={0}                   
-          floatIntensity={0.2}                    
+          speed={0.2 + Math.random() * 0.3}
+          rotationIntensity={0}
+          floatIntensity={0.2}
         >
           <Sphere
             args={[0.02 + Math.random() * 0.03]}
@@ -203,7 +204,12 @@ export default function LandingPage() {
 
         {/* Get Started Button */}
       <div className="flex justify-center mt-12">
-        <button className="px-8 py-4 bg-purple-500 text-white font-semibold rounded-full hover:bg-purple-600 transition-colors">
+        <button
+          className="px-8 py-4 bg-purple-500 text-white font-semibold rounded-full hover:bg-purple-600 transition-colors"
+          onClick={() => {
+            window.location.href = "/analyze"
+          }}
+        >
           Get Started
         </button>
       </div>
@@ -234,16 +240,6 @@ export default function LandingPage() {
           ))}
         </div>
 
-        {/* Trusted By Section */}
-        <div className="text-center mt-32">
-          <p className="text-sm text-muted-foreground mb-8">Trusted by developers at</p>
-          <div className="flex items-center justify-center space-x-12 opacity-50">
-            <div className="text-2xl font-bold hover:opacity-100 transition-opacity cursor-pointer">Vercel</div>
-            <div className="text-2xl font-bold hover:opacity-100 transition-opacity cursor-pointer">GitHub</div>
-            <div className="text-2xl font-bold hover:opacity-100 transition-opacity cursor-pointer">OpenAI</div>
-            <div className="text-2xl font-bold hover:opacity-100 transition-opacity cursor-pointer">Stripe</div>
-          </div>
-        </div>
       </div>
     </div>
   )
