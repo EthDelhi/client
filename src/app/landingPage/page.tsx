@@ -3,8 +3,10 @@
 import { useState, useRef, useEffect } from "react"
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import { OrbitControls, Sphere, MeshDistortMaterial, Environment, Float } from "@react-three/drei"
+import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { FileText, BarChart3, Zap, Brain, Network } from "lucide-react"
+import { ArrowRight, Github, FileText, BarChart3, Zap, Brain, Network } from "lucide-react"
+import Link from "next/link"
 import type * as THREE from "three"
 
 function InteractiveBackground({ mousePosition }: { mousePosition: { x: number; y: number } }) {
@@ -26,31 +28,52 @@ function InteractiveBackground({ mousePosition }: { mousePosition: { x: number; 
         <MeshDistortMaterial
           color="#6B5FFF"
           attach="material"
-          distort={0.5 + mousePosition.x * 0.3}
-          speed={0.8 + mousePosition.y * 0.01}
+          distort={0.4 + mousePosition.x * 0.2}
+          speed={2 + mousePosition.y}
           roughness={0.2}
           metalness={0.8}
-          transparent
-          opacity={0.8} 
         />
       </Sphere>
     </Float>
   )
 }
 
-function InteractiveParticles() {
+function InteractiveParticles({ mousePosition }: { mousePosition: { x: number; y: number } }) {
+  const particlesRef = useRef<THREE.Group>(null)
+  const { viewport } = useThree()
+
+  useFrame((state) => {
+    if (particlesRef.current) {
+      const mouseIntensity = Math.sqrt(mousePosition.x * mousePosition.x + mousePosition.y * mousePosition.y)
+      const baseSpeed = 0.05
+      const interactiveSpeed = baseSpeed + mouseIntensity * 0.15
+
+      particlesRef.current.rotation.y = state.clock.elapsedTime * interactiveSpeed + mousePosition.x * 0.02
+      particlesRef.current.rotation.x = mousePosition.y * 0.01
+
+      particlesRef.current.children.forEach((child, i) => {
+        const mesh = child as THREE.Mesh
+        const particleSpeed = 0.1 + mouseIntensity * 0.3
+        mesh.position.y = Math.sin(state.clock.elapsedTime * particleSpeed + i) * 0.5 + mousePosition.y * 0.2
+        mesh.position.x += Math.sin(state.clock.elapsedTime * particleSpeed + i) * (0.01 + mouseIntensity * 0.02)
+
+        const distance = Math.sqrt(
+          Math.pow(mesh.position.x - (mousePosition.x * viewport.width) / 2, 2) +
+            Math.pow(mesh.position.y - (mousePosition.y * viewport.height) / 2, 2),
+        )
+        const scale = Math.max(0.3, 3 - distance / 3)
+        mesh.scale.setScalar(scale)
+      })
+    }
+  })
+
   return (
-    <group>
+    <group ref={particlesRef}>
       {Array.from({ length: 120 }).map((_, i) => (
-        <Float
-          key={i}
-          speed={0.2 + Math.random() * 0.3}      
-          rotationIntensity={0}                   
-          floatIntensity={0.2}                    
-        >
+        <Float key={i} speed={1.5 + Math.random() * 2} rotationIntensity={0.8} floatIntensity={0.8}>
           <Sphere
             args={[0.02 + Math.random() * 0.03]}
-            position={[(Math.random() - 0.5) * 25, (Math.random() - 0.5) * 25, (Math.random() - 0.5) * 25]}
+            position={[(Math.random() - 0.5) * 30, (Math.random() - 0.5) * 30, (Math.random() - 0.5) * 30]}
           >
             <meshBasicMaterial
               color={i % 4 === 0 ? "#4D8AFF" : i % 4 === 1 ? "#FF64F9" : i % 4 === 2 ? "#5BFF89" : "#FFD700"}
@@ -143,7 +166,7 @@ export default function LandingPage() {
           <pointLight position={[-10, -10, -10]} intensity={0.7} color="#FF64F9" />
           <spotLight position={[0, 10, 0]} intensity={0.8} color="#4D8AFF" />
           <InteractiveBackground mousePosition={mousePosition} />
-          <InteractiveParticles />
+          <InteractiveParticles mousePosition={mousePosition} />
           <WaveEffect mousePosition={mousePosition} />
           <Environment preset="night" />
           <OrbitControls
@@ -170,12 +193,24 @@ export default function LandingPage() {
         </div>
       )}
 
+      {/* Navigation */}
       <nav className="relative z-10 flex items-center justify-between p-6 max-w-7xl mx-auto backdrop-blur-sm">
         <div className="flex items-center space-x-2">
           <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
             <Zap className="w-5 h-5 text-white" />
           </div>
-          <span className="text-xl font-bold text-balance">Project Name</span>
+          <span className="text-xl font-bold text-balance">CodeSync AI</span>
+        </div>
+        <div className="flex items-center space-x-6">
+          <Link href="/analyze" className="text-muted-foreground hover:text-foreground transition-colors">
+            Analyze
+          </Link>
+          <Link href="/docs" className="text-muted-foreground hover:text-foreground transition-colors">
+            Docs
+          </Link>
+          <Button variant="outline" size="sm">
+            Sign In
+          </Button>
         </div>
       </nav>
 
@@ -183,6 +218,7 @@ export default function LandingPage() {
       <div className="relative z-10 max-w-7xl mx-auto px-6 pt-20 pb-32">
         <div className="text-center space-y-8">
           <div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm backdrop-blur-sm">
+            <Zap className="w-4 h-4 mr-2 text-primary" />
             AI-Powered Repository Analysis
           </div>
 
@@ -199,14 +235,17 @@ export default function LandingPage() {
             comparing your GitHub repositories against documentation.
           </p>
 
+          <div className="flex items-center justify-center gap-4 pt-8">
+            <Link href="/analyze" className="cta-button">
+              Start Analysis
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Link>
+            <Button variant="outline" size="lg" className="group bg-transparent backdrop-blur-sm">
+              <Github className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform" />
+              View on GitHub
+            </Button>
+          </div>
         </div>
-
-        {/* Get Started Button */}
-      <div className="flex justify-center mt-12">
-        <button className="px-8 py-4 bg-purple-500 text-white font-semibold rounded-full hover:bg-purple-600 transition-colors">
-          Get Started
-        </button>
-      </div>
 
         {/* Features Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mt-32">
