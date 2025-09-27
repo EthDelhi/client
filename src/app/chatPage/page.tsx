@@ -27,6 +27,7 @@ import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
 import type * as THREE from 'three';
 import apiClient from '@/src/lib/axios';
+import { mockApis, ApiResponse } from '@/src/lib/mock';
 
 function InteractiveAnalysisBackground({
   mousePosition,
@@ -104,14 +105,33 @@ export default function ChatPage() {
       const [startDate, endDate] = formData.hackathonDates
         ? formData.hackathonDates.split(' - ')
         : ['2025-09-25T00:00:00Z', '2025-09-27T23:59:59Z']; // Default dates if not provided
-      console.log(startDate, endDate);
-      const { data } = await apiClient.post('/analyze', {
-        url: githubUrl,
-        start_date: startDate,
-        end_date: endDate,
-      });
 
-      console.log('Analysis response:', data);
+      // Make both API requests in parallel
+      const [analysisResponse, secondResponse] = await Promise.all([
+        // First API call - replace with actual API when ready
+        mockApis.analyze({
+          url: githubUrl,
+          start_date: startDate,
+          end_date: endDate,
+        }),
+        // Second API call - replace with actual API when ready
+        mockApis.secondAnalysis({
+          url: githubUrl,
+          start_date: startDate,
+          end_date: endDate,
+        })
+      ]);
+
+      // Combine both responses
+      const combinedData = {
+        analysis: analysisResponse.data,
+        additional: secondResponse.data
+      };
+
+      console.log('Combined analysis response:', combinedData);
+
+      // Store the data in localStorage for the report page
+      localStorage.setItem('reportData', JSON.stringify(combinedData));
 
       // Proceed to the report page
       document.body.classList.add('slide-up');

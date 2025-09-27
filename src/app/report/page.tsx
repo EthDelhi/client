@@ -48,7 +48,19 @@ function InteractiveAnalysisBackground({ mousePosition }: { mousePosition: { x: 
 }
 
 export default function ReportPage() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [reportData, setReportData] = useState<{
+    analysis: typeof mockData;
+    additional: typeof mockData;
+  } | null>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    // Get the data from localStorage
+    const storedData = localStorage.getItem('reportData');
+    if (storedData) {
+      setReportData(JSON.parse(storedData));
+    }
+  }, [])
   const router = useRouter()
 
   useEffect(() => {
@@ -65,6 +77,7 @@ export default function ReportPage() {
 
 
   // Chart configurations using actual data
+  const data = reportData?.analysis || mockData;
   const summaryInflationChart: ApexOptions = {
     chart: { type: 'radialBar', background: 'transparent' },
     plotOptions: {

@@ -1,3 +1,26 @@
+// Mock data type
+export type AnalysisData = typeof mockData;
+
+// Mock API response type
+export interface ApiResponse {
+  data: AnalysisData;
+}
+
+// Mock API functions
+export const mockApis = {
+  analyze: async (params: { url: string; start_date: string; end_date: string }): Promise<ApiResponse> => {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    return { data: mockData };
+  },
+
+  secondAnalysis: async (params: { url: string; start_date: string; end_date: string }): Promise<ApiResponse> => {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    return { data: mockData };
+  }
+};
+
 export const mockData = {
     repository: {
       owner: "fetchai",
