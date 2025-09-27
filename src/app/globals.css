@@ -305,3 +305,22 @@
     --m: 0.8rem;
   }
 }
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spin-fast {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+@keyframes ping-slow {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.5); opacity: 0; }
+}
+
+.animate-spin-slow { animation: spin-slow 3s linear infinite; }
+.animate-spin-fast { animation: spin-fast 1.5s linear infinite; }
+.animate-ping-slow { animation: ping-slow 2.5s ease-in-out infinite; }

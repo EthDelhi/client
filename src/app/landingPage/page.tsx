@@ -1,25 +1,39 @@
-"use client"
+"use client";
 
-import { useState, useRef, useEffect } from "react"
-import { Canvas, useFrame, useThree } from "@react-three/fiber"
-import { OrbitControls, Sphere, MeshDistortMaterial, Environment, Float } from "@react-three/drei"
-import { Card, CardContent } from "@/src/components/ui/card"
-import { FileText, BarChart3, Zap, Brain, Network } from "lucide-react"
-import type * as THREE from "three"
+import { useRouter } from "next/navigation";
+import { useState, useRef, useEffect } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import {
+  OrbitControls,
+  Sphere,
+  MeshDistortMaterial,
+  Environment,
+  Float,
+} from "@react-three/drei";
+import { Card, CardContent } from "@/src/components/ui/card";
+import { FileText, BarChart3, Zap, Brain, Network } from "lucide-react";
+import type * as THREE from "three";
 
-
-function InteractiveBackground({ mousePosition }: { mousePosition: { x: number; y: number } }) {
-  const meshRef = useRef<THREE.Mesh>(null)
-  const { viewport } = useThree()
+function InteractiveBackground({
+  mousePosition,
+}: {
+  mousePosition: { x: number; y: number };
+}) {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const { viewport } = useThree();
 
   useFrame((state) => {
     if (meshRef.current) {
-      meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.3) * 0.2 + mousePosition.y * 0.1
-      meshRef.current.rotation.y = state.clock.elapsedTime * 0.1 + mousePosition.x * 0.1
-      meshRef.current.position.x = Math.sin(state.clock.elapsedTime * 0.2) * 0.5 + mousePosition.x * 0.3
-      meshRef.current.position.y = Math.cos(state.clock.elapsedTime * 0.2) * 0.3 + mousePosition.y * 0.3
+      meshRef.current.rotation.x =
+        Math.sin(state.clock.elapsedTime * 0.3) * 0.2 + mousePosition.y * 0.1;
+      meshRef.current.rotation.y =
+        state.clock.elapsedTime * 0.1 + mousePosition.x * 0.1;
+      meshRef.current.position.x =
+        Math.sin(state.clock.elapsedTime * 0.2) * 0.5 + mousePosition.x * 0.3;
+      meshRef.current.position.y =
+        Math.cos(state.clock.elapsedTime * 0.2) * 0.3 + mousePosition.y * 0.3;
     }
-  })
+  });
 
   return (
     <Float speed={1.5} rotationIntensity={0.5} floatIntensity={0.5}>
@@ -36,7 +50,7 @@ function InteractiveBackground({ mousePosition }: { mousePosition: { x: number; 
         />
       </Sphere>
     </Float>
-  )
+  );
 }
 
 function InteractiveParticles() {
@@ -51,10 +65,22 @@ function InteractiveParticles() {
         >
           <Sphere
             args={[0.02 + Math.random() * 0.03]}
-            position={[(Math.random() - 0.5) * 25, (Math.random() - 0.5) * 25, (Math.random() - 0.5) * 25]}
+            position={[
+              (Math.random() - 0.5) * 25,
+              (Math.random() - 0.5) * 25,
+              (Math.random() - 0.5) * 25,
+            ]}
           >
             <meshBasicMaterial
-              color={i % 4 === 0 ? "#4D8AFF" : i % 4 === 1 ? "#FF64F9" : i % 4 === 2 ? "#5BFF89" : "#FFD700"}
+              color={
+                i % 4 === 0
+                  ? "#4D8AFF"
+                  : i % 4 === 1
+                  ? "#FF64F9"
+                  : i % 4 === 2
+                  ? "#5BFF89"
+                  : "#FFD700"
+              }
               transparent
               opacity={0.7}
             />
@@ -62,54 +88,62 @@ function InteractiveParticles() {
         </Float>
       ))}
     </group>
-  )
+  );
 }
 
-function WaveEffect({ mousePosition }: { mousePosition: { x: number; y: number } }) {
-  const waveRef = useRef<THREE.Mesh>(null)
+function WaveEffect({
+  mousePosition,
+}: {
+  mousePosition: { x: number; y: number };
+}) {
+  const waveRef = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
     if (waveRef.current) {
-      waveRef.current.rotation.z = state.clock.elapsedTime * 0.1 + mousePosition.x * 0.5
-      waveRef.current.position.x = mousePosition.x * 2
-      waveRef.current.position.y = mousePosition.y * 2
+      waveRef.current.rotation.z =
+        state.clock.elapsedTime * 0.1 + mousePosition.x * 0.5;
+      waveRef.current.position.x = mousePosition.x * 2;
+      waveRef.current.position.y = mousePosition.y * 2;
     }
-  })
+  });
 
   return (
     <mesh ref={waveRef} position={[0, 0, -5]}>
       <planeGeometry args={[50, 50, 50, 50]} />
       <meshBasicMaterial color="#1a1a2e" transparent opacity={0.1} wireframe />
     </mesh>
-  )
+  );
 }
 
 export default function LandingPage() {
-  const [hoveredFeature, setHoveredFeature] = useState<number | null>(null)
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const [isClicked, setIsClicked] = useState(false)
-
+  const [hoveredFeature, setHoveredFeature] = useState<number | null>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isClicked, setIsClicked] = useState(false);
+  const router = useRouter();
+  const handleChat = () => {
+    router.push("/chatPage");
+  };
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
       setMousePosition({
         x: (event.clientX / window.innerWidth) * 2 - 1,
         y: -(event.clientY / window.innerHeight) * 2 + 1,
-      })
-    }
+      });
+    };
 
     const handleClick = () => {
-      setIsClicked(true)
-      setTimeout(() => setIsClicked(false), 300)
-    }
+      setIsClicked(true);
+      setTimeout(() => setIsClicked(false), 300);
+    };
 
-    window.addEventListener("mousemove", handleMouseMove)
-    window.addEventListener("click", handleClick)
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("click", handleClick);
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove)
-      window.removeEventListener("click", handleClick)
-    }
-  }, [])
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("click", handleClick);
+    };
+  }, []);
 
   const features = [
     {
@@ -121,27 +155,37 @@ export default function LandingPage() {
     {
       icon: <BarChart3 className="w-8 h-8" />,
       title: "Usage Analytics",
-      description: "Detailed reports and visualizations comparing sponsor code usage across your project",
+      description:
+        "Detailed reports and visualizations comparing sponsor code usage across your project",
     },
     {
       icon: <FileText className="w-8 h-8" />,
       title: "README Analysis",
-      description: "Analyze how well your README documentation aligns with your actual codebase implementation",
+      description:
+        "Analyze how well your README documentation aligns with your actual codebase implementation",
     },
     {
       icon: <Brain className="w-8 h-8" />,
       title: "AI-Powered Insights",
-      description: "Get intelligent recommendations for improving code-documentation alignment",
+      description:
+        "Get intelligent recommendations for improving code-documentation alignment",
     },
-  ]
+  ];
 
   return (
     <div className="min-h-screen relative overflow-hidden">
       <div className="fixed inset-0 z-0">
-        <Canvas camera={{ position: [0, 0, 8], fov: 60 }} style={{ background: "transparent" }}>
+        <Canvas
+          camera={{ position: [0, 0, 8], fov: 60 }}
+          style={{ background: "transparent" }}
+        >
           <ambientLight intensity={0.4} />
           <pointLight position={[10, 10, 10]} intensity={1} color="#6B5FFF" />
-          <pointLight position={[-10, -10, -10]} intensity={0.7} color="#FF64F9" />
+          <pointLight
+            position={[-10, -10, -10]}
+            intensity={0.7}
+            color="#FF64F9"
+          />
           <spotLight position={[0, 10, 0]} intensity={0.8} color="#4D8AFF" />
           <InteractiveBackground mousePosition={mousePosition} />
           <InteractiveParticles />
@@ -151,7 +195,11 @@ export default function LandingPage() {
             enableZoom={false}
             enablePan={false}
             autoRotate
-            autoRotateSpeed={0.2 + Math.abs(mousePosition.x) * 1.2 + Math.abs(mousePosition.y) * 0.8}
+            autoRotateSpeed={
+              0.2 +
+              Math.abs(mousePosition.x) * 1.2 +
+              Math.abs(mousePosition.y) * 0.8
+            }
             maxPolarAngle={Math.PI / 2}
             minPolarAngle={Math.PI / 2}
           />
@@ -196,23 +244,24 @@ export default function LandingPage() {
           </h1>
 
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty">
-            Leverage agentic AI to create knowledge graphs, analyze component usage, and generate comprehensive reports
-            comparing your GitHub repositories against documentation.
+            Leverage agentic AI to create knowledge graphs, analyze component
+            usage, and generate comprehensive reports comparing your GitHub
+            repositories against documentation.
           </p>
-
         </div>
 
         {/* Get Started Button */}
-      <div className="flex justify-center mt-12">
-        <button
-          className="px-8 py-4 bg-purple-500 text-white font-semibold rounded-full hover:bg-purple-600 transition-colors"
-          onClick={() => {
-            window.location.href = "/analyze"
-          }}
-        >
-          Get Started
-        </button>
-      </div>
+        <div className="flex justify-center mt-12">
+          <button
+            onClick={handleChat}
+            className="group relative inline-flex items-center bg-purple-500 text-white font-semibold rounded-full overflow-hidden transition-all duration-300 px-8 py-4"
+          >
+            <span className="transition-all duration-300">Get Started</span>
+            <span className="ml-0 w-0 overflow-hidden flex items-center justify-center bg-white text-purple-500 font-bold rounded-full transition-all duration-300 group-hover:ml-4 group-hover:w-8 h-8">
+              ➔
+            </span>
+          </button>
+        </div>
 
         {/* Features Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mt-32">
@@ -233,14 +282,17 @@ export default function LandingPage() {
                 >
                   {feature.icon}
                 </div>
-                <h3 className="font-semibold text-lg text-balance">{feature.title}</h3>
-                <p className="text-sm text-muted-foreground text-pretty">{feature.description}</p>
+                <h3 className="font-semibold text-lg text-balance">
+                  {feature.title}
+                </h3>
+                <p className="text-sm text-muted-foreground text-pretty">
+                  {feature.description}
+                </p>
               </CardContent>
             </Card>
           ))}
         </div>
-
       </div>
     </div>
-  )
+  );
 }
