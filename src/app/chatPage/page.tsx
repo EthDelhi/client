@@ -177,12 +177,6 @@ export default function ChatPage() {
           <ArrowLeft className='w-5 h-5' />
           <span>Back to Home</span>
         </Link>
-        <div className='flex items-center space-x-2'>
-          <div className='w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center'>
-            <Zap className='w-5 h-5 text-white' />
-          </div>
-          <span className='text-xl font-bold'>Forensicode</span>
-        </div>
       </nav>
 
       <div className='relative z-10 max-w-7xl mx-auto px-6 py-12'>
@@ -255,11 +249,11 @@ export default function ChatPage() {
                   className='text-base font-medium flex items-center space-x-2'
                 >
                   <div className='w-2 h-2 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full'></div>
-                  <span>Project Description</span>
+                  <span>Reasoning for Eligibility</span>
                 </Label>
                 <Textarea
                   id='team-summary'
-                  placeholder="Describe your project, tech stack, and what you're building for the hackathon"
+                  placeholder="Describe how your project qualifies for this particular track"
                   value={formData.projectSummary}
                   onChange={(e) =>
                     setFormData((prev) => ({
@@ -270,7 +264,7 @@ export default function ChatPage() {
                   className='min-h-32 resize-none bg-background/60 backdrop-blur-sm border-blue-500/20 transition-all duration-300 focus:bg-background/80 focus:border-blue-500/40 focus:shadow-lg focus:shadow-blue-500/10'
                 />
                 <p className='text-sm text-muted-foreground/80'>
-                  Provide details about your project
+                  Provide details about how your project uses this sponsor
                 </p>
               </div>
             </CardContent>

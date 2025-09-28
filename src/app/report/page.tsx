@@ -11,7 +11,6 @@ import { useRef } from "react"
 import type * as THREE from "three"
 import dynamic from "next/dynamic"
 import { ApexOptions } from "apexcharts"
-import { mockData } from "@/src/lib/mock"
 import { Loader } from "../../components/Loader"
 
 // Dynamically import ApexCharts with SSR disabled for Next.js compatibility
@@ -112,7 +111,7 @@ export default function ReportPage() {
     },
     fill: { colors: ['#EF4444'] },
     labels: ['Trust Score'],
-    colors: ['#EF4444']
+    colors: ['#FFFF00']
   }
 
   const commitTimelineChart: ApexOptions = {
@@ -229,7 +228,7 @@ export default function ReportPage() {
     chart: { type: 'bar', background: 'transparent', toolbar: { show: false } },
     plotOptions: { bar: { horizontal: false, borderRadius: 0 } },
     dataLabels: { enabled: false },
-    colors: ['#EF4444', '#22C55E', '#737c8eff'],
+    colors: ['#22C55E', '#737c8eff'],
     xaxis: {
       categories: ['Before Hackathon', 'During Hackathon', 'After Hackathon'],
       labels: { style: { colors: ['#FFFFFF', '#FFFFFF', '#FFFFFF'] } }
@@ -265,18 +264,12 @@ export default function ReportPage() {
       {/* Navigation */}
       <nav className="relative z-10 flex items-center justify-between p-6 max-w-7xl mx-auto backdrop-blur-sm">
         <Link
-          href="/analyze"
+          href="/chatPage"
           className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105"
         >
           <ArrowLeft className="w-5 h-5" />
           <span>Back to Analysis</span>
         </Link>
-        <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
-            <BarChart3 className="w-5 h-5 text-white" />
-          </div>
-          <span className="text-xl font-bold">Hackathon Analysis Report</span>
-        </div>
       </nav>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-12">
@@ -612,28 +605,28 @@ export default function ReportPage() {
                     <Clock className="w-4 h-4" />
                     <span>Pre-Hackathon Commits</span>
                   </div>
-                  <p className="text-3xl font-bold text-red-400">{analysisData?.graph_data?.metadata?.commits_before}</p>
+                  <p className="text-3xl font-bold text-blue-400">{analysisData?.graph_data?.metadata?.commits_before}</p>
                 </div>
                 <div className="space-y-3">
                   <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                     <Activity className="w-4 h-4" />
                     <span>During Hackathon</span>
                   </div>
-                  <p className="text-3xl font-bold text-red-400">{analysisData?.graph_data?.line_changes_map?.length}</p>
+                  <p className="text-3xl font-bold text-blue-400">{analysisData?.graph_data?.line_changes_map?.length}</p>
                 </div>
                 <div className="space-y-3">
                   <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                     <Users className="w-4 h-4" />
                     <span>Risk Level</span>
                   </div>
-                  <p className="text-3xl font-bold text-yellow-400">{analysisData?.authenticity_summary?.risk_level}</p>
+                  <p className="text-3xl font-bold text-blue-400">{analysisData?.authenticity_summary?.risk_level}</p>
                 </div>
                 <div className="space-y-3">
                   <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                     <Shield className="w-4 h-4" />
                     <span>Trust Score</span>
                   </div>
-                  <p className="text-3xl font-bold text-red-400">{Math.round(analysisData?.authenticity_summary?.trust_score * 100)}%</p>
+                  <p className="text-3xl font-bold text-blue-400">{Math.round(analysisData?.authenticity_summary?.trust_score * 100)}%</p>
                 </div>
               </div>
             </CardContent>
