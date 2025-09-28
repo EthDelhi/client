@@ -363,7 +363,7 @@ export default function ReportPage() {
                   <Code className="w-6 h-6 text-blue-400" />
                 </div>
               </div>
-              <h3 className="text-3xl font-bold text-blue-400 mb-2">{analysisData?.graph_data?.lines_change_map?.length >0 ? analysisData?.graph_data?.lines_change_map?.length : 0}</h3>
+              <h3 className="text-3xl font-bold text-blue-400 mb-2">{analysisData?.graph_data?.line_changes_map?.length >0 ? analysisData?.graph_data?.line_changes_map?.length : 0}</h3>
               <p className="text-sm text-muted-foreground">Analyzed Commits</p>
             </CardContent>
           </Card>
@@ -387,7 +387,7 @@ export default function ReportPage() {
                   <Zap className="w-6 h-6 text-green-400" />
                 </div>
               </div>
-              <h3 className="text-3xl font-bold text-green-400 mb-2">{analysisData?.graph_data?.lines_change_map?.length}</h3>
+              <h3 className="text-3xl font-bold text-green-400 mb-2">{analysisData?.graph_data?.line_changes_map?.length}</h3>
               <p className="text-sm text-muted-foreground">Commits During Hackathon</p>
             </CardContent>
           </Card>

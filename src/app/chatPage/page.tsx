@@ -104,7 +104,7 @@ export default function ChatPage() {
 
       const [startDate, endDate] = formData.hackathonDates
         ? formData.hackathonDates.split(' - ')
-        : ['2025-09-25T00:00:00Z', '2025-09-27T23:59:59Z']; // Default dates if not provided
+        : ['2025-09-25T00:00:00Z', '2025-09-28T23:59:59Z']; // Default dates if not provided
 
       // Make both API requests in parallel
       const [analysisResponse, sponsorResponse] = await Promise.all([
