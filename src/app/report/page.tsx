@@ -183,7 +183,7 @@ export default function ReportPage() {
     dataLabels: { enabled: false },
     colors: ['#22C55E', '#EF4444'],
     xaxis: { 
-      categories: ['Used APIs', 'Unused APIs'],
+      categories: ['Required APIs', 'Used APIs'],
       labels: { style: { colors: ['#FFFFFF', '#FFFFFF'] } }  // X-axis labels in white
     },
     yaxis: {
@@ -213,10 +213,10 @@ export default function ReportPage() {
     chart: { type: 'bar', background: 'transparent', toolbar: { show: false }  },
     plotOptions: { bar: { horizontal: false, borderRadius: 0 } },
     dataLabels: { enabled: false },
-    colors: ['#22C55E', '#F59E0B', '#6B7280'],
+    colors: ['#22C55E', '#F59E0B'],
     xaxis: {
-      categories: ['Integrated', 'Not Integrated', 'Test Only'],
-      labels: { style: { colors: ['#FFFFFF', '#FFFFFF', '#FFFFFF'] } }
+      categories: ['Integrated', 'Not Integrated'],
+      labels: { style: { colors: ['#FFFFFF', '#FFFFFF'] } }
     },
     yaxis: {
       labels: { style: { colors: ['#FFFFFF'] } }  // Y-axis labels in white
@@ -508,7 +508,7 @@ export default function ReportPage() {
                 <ApexChart
                   options={apiRequiredUsedChart}
                   series={[
-                    { name: 'API Status', data: [87, 13] }
+                    { name: 'API Status', data: [sponsorData?.response_from_agent?.metrics?.required_apis, sponsorData?.response_from_agent?.metrics?.verified_apis ] }
                   ]}
                   type="bar"
                   height="100%"
@@ -520,7 +520,7 @@ export default function ReportPage() {
           <Card className="floating-card bg-gradient-to-br from-yellow-500/10 via-card/30 to-red-500/10 backdrop-blur-xl border border-yellow-500/20 shadow-2xl shadow-yellow-500/10 hover:shadow-yellow-500/20 transition-all duration-500 hover:scale-[1.02] hover:-translate-y-2">
             <CardHeader className="pb-4">
               <CardTitle className="flex items-center space-x-2 text-xl">
-                <div className="p-2 rounded-lg bg-gradient-to-r from-yellow-500/20 to-red-500/20 border border-yellow-500/30">
+                <div className="p-2 rounded-lg bg-gradient-to-r from-yellow-500/20 to-red-500/20 border border-yellow-500/30">    
                   <AlertTriangle className="w-5 h-5 text-yellow-400" />
                 </div>
                 <span className="bg-gradient-to-r from-yellow-400 to-red-400 bg-clip-text text-transparent">
@@ -533,7 +533,7 @@ export default function ReportPage() {
                 <ApexChart
                   options={apiNotUsedChart}
                   series={[
-                    { name: 'API Status', data: [87, 13] }
+                    { name: 'API Status', data: [sponsorData?.response_from_agent?.metrics?.verified_apis,sponsorData?.response_from_agent?.metrics?.verified_apis-1>0 ? sponsorData?.response_from_agent?.metrics?.verified_apis-1 : 0] }
                   ]}
                   type="bar"
                   height="100%"
@@ -558,7 +558,7 @@ export default function ReportPage() {
                 <ApexChart
                   options={apiIntegrationChart}
                   series={[
-                    { name: 'Integration Status', data: [78, 15, 7] }
+                    { name: 'Integration Status', data: [sponsorData?.response_from_agent?.metrics?.integration_score, 100 - sponsorData?.response_from_agent?.metrics?.integration_score] }
                   ]}
                   type="bar"
                   height="100%"
@@ -655,10 +655,12 @@ export default function ReportPage() {
           <CardContent className="space-y-4">
             <div className="p-6 rounded-lg bg-background/20 backdrop-blur-sm border border-purple-500/20">
               <p className="text-muted-foreground leading-relaxed">
-                <strong className="text-red-400">⚠️ Integrity Concerns Detected:</strong> {analysisData?.authenticity_summary?.verdict_summary}
+                {sponsorData?.response_from_agent?.ai_summary_report}<br></br>
+               {analysisData?.authenticity_summary?.verdict_summary}
                 The analysis reveals that <strong className="text-purple-400">{sponsorData?.response_from_agent?.project_url?.split('/')[4]}</strong> had significant development activity 
                 prior to the hackathon period, with <strong className="text-blue-400">{analysisData?.graph_data?.metadata?.commits_before} commits</strong> 
                  completed before the official start date. This pattern suggests potential pre-work that may violate hackathon integrity requirements.
+
               </p>
             </div>
           </CardContent>
