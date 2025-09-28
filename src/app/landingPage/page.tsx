@@ -147,28 +147,28 @@ export default function LandingPage() {
 
   const features = [
     {
-      icon: <Network className="w-8 h-8" />,
-      title: "Knowledge Graph Generation",
+      icon: <Brain className="w-8 h-8" />,
+      title: "Contribution Score",
       description:
-        "Create comprehensive knowledge graphs showing how documentation components are used in your codebase",
+        "Quantify the code contribution percentage for each team member.",
     },
     {
       icon: <BarChart3 className="w-8 h-8" />,
-      title: "Usage Analytics",
+      title: "Timeline Check",
       description:
-        "Detailed reports and visualizations comparing sponsor code usage across your project",
+        "Validate that all significant work occurred during the event.",
     },
     {
       icon: <FileText className="w-8 h-8" />,
-      title: "README Analysis",
+      title: "Commit History Analysis",
       description:
-        "Analyze how well your README documentation aligns with your actual codebase implementation",
+        "Detect pre-work and unusual development patterns.",
     },
     {
-      icon: <Brain className="w-8 h-8" />,
-      title: "AI-Powered Insights",
+      icon: <Network className="w-8 h-8" />,
+      title: "Output",
       description:
-        "Get intelligent recommendations for improving code-documentation alignment",
+        "A Pre-Hacking Confidence Score and a visualized Team Contribution Graph.",
     },
   ];
 
@@ -224,7 +224,7 @@ export default function LandingPage() {
           <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
             <Zap className="w-5 h-5 text-white" />
           </div>
-          <span className="text-xl font-bold text-balance">Project Name</span>
+          <span className="text-xl font-bold text-balance">Forensicode</span>
         </div>
       </nav>
 
@@ -236,17 +236,15 @@ export default function LandingPage() {
           </div>
 
           <h1 className="text-6xl md:text-7xl font-bold text-balance leading-tight">
-            Analyze Code Against
+            Automated Integrity and
             <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
               {" "}
-              Documentation
+              Technical Validation Platform
             </span>
           </h1>
 
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty">
-            Leverage agentic AI to create knowledge graphs, analyze component
-            usage, and generate comprehensive reports comparing your GitHub
-            repositories against documentation.
+            Addressing the Crisis of Trust and Verification in Hackathons
           </p>
         </div>
 

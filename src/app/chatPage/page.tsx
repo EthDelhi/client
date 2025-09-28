@@ -26,7 +26,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
 import type * as THREE from 'three';
-import apiClient from '@/src/lib/axios';
+import { analyzeApiClient, sponsorApiClient } from '@/src/lib/axios';
 import { mockApis, ApiResponse } from '@/src/lib/mock';
 
 function InteractiveAnalysisBackground({
@@ -107,25 +107,25 @@ export default function ChatPage() {
         : ['2025-09-25T00:00:00Z', '2025-09-27T23:59:59Z']; // Default dates if not provided
 
       // Make both API requests in parallel
-      const [analysisResponse, secondResponse] = await Promise.all([
-        // First API call - replace with actual API when ready
-        mockApis.analyze({
-          url: githubUrl,
-          start_date: startDate,
-          end_date: endDate,
-        }),
-        // Second API call - replace with actual API when ready
-        mockApis.secondAnalysis({
-          url: githubUrl,
-          start_date: startDate,
-          end_date: endDate,
-        })
+      const [analysisResponse, sponsorResponse] = await Promise.all([
+        // First API call for project analysis
+       
+         analyzeApiClient.post('/analyze', {
+              url: githubUrl,
+              start_date: startDate,
+              end_date: endDate,
+            }),
+        sponsorApiClient.post('/rest/post', {
+              repo_url: githubUrl,
+              participant_summary: formData.projectSummary,
+              sponsor_requirements: formData.sponsorRequirements,
+            })
       ]);
 
       // Combine both responses
       const combinedData = {
         analysis: analysisResponse.data,
-        additional: secondResponse.data
+        sponsor: sponsorResponse.data,
       };
 
       console.log('Combined analysis response:', combinedData);
@@ -181,7 +181,7 @@ export default function ChatPage() {
           <div className='w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center'>
             <Zap className='w-5 h-5 text-white' />
           </div>
-          <span className='text-xl font-bold'>Project Name</span>
+          <span className='text-xl font-bold'>Forensicode</span>
         </div>
       </nav>
 
@@ -204,7 +204,7 @@ export default function ChatPage() {
                   <Github className='w-5 h-5 text-purple-400' />
                 </div>
                 <span className='bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent'>
-                  GitHub Repository URLs
+                  GitHub Repository URL
                 </span>
               </CardTitle>
             </CardHeader>
@@ -230,8 +230,7 @@ export default function ChatPage() {
                   className='min-h-32 resize-none bg-background/60 backdrop-blur-sm border-purple-500/20 transition-all duration-300 focus:bg-background/80 focus:border-purple-500/40 focus:shadow-lg focus:shadow-purple-500/10'
                 />
                 <p className='text-sm text-muted-foreground/80'>
-                  Enter all GitHub repository URLs for your hackathon project
-                  (one per line)
+                  Enter the GitHub repository URL for your hackathon project
                 </p>
               </div>
             </CardContent>
@@ -260,7 +259,7 @@ export default function ChatPage() {
                 </Label>
                 <Textarea
                   id='team-summary'
-                  placeholder="Describe your project, tech stack, team members, and what you're building for the hackathon"
+                  placeholder="Describe your project, tech stack, and what you're building for the hackathon"
                   value={formData.projectSummary}
                   onChange={(e) =>
                     setFormData((prev) => ({
@@ -271,7 +270,7 @@ export default function ChatPage() {
                   className='min-h-32 resize-none bg-background/60 backdrop-blur-sm border-blue-500/20 transition-all duration-300 focus:bg-background/80 focus:border-blue-500/40 focus:shadow-lg focus:shadow-blue-500/10'
                 />
                 <p className='text-sm text-muted-foreground/80'>
-                  Provide details about your team composition and project goals
+                  Provide details about your project
                 </p>
               </div>
             </CardContent>
@@ -342,7 +341,7 @@ export default function ChatPage() {
                 />
 
                 <p className='text-sm text-muted-foreground/80 mt-2'>
-                  Enter start and end dates along with important milestones
+                  Enter start and end dates of the hackathon
                 </p>
               </div>
             </CardContent>
